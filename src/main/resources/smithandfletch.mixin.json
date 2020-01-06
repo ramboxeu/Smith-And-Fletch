@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "rambox.smithandfletch.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "SmithingTableMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

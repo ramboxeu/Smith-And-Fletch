@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "smith_and_fletch",
+  "version": "${version}",
+
+  "name": "Smith And Fletch",
+  "description": "Adds a bit of functionality to Smiting and Fletching Table.",
+  "authors": [
+    {
+      "name": "Rambox",
+      "contact": "https://twitter.com/RamboxEu"
+    }
+  ],
+  "contact": {
+    "sources": "https://github.com/ramboxeu/Smith-And-Fletch",
+    "issues": "https://github.com/ramboxeu/Smith-And-Fletch/issues"
+  },
+
+  "license": "MIT",
+  "icon": "",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "rambox.smithandfletch.SmithAndFletch"
+    ]
+  },
+  "mixins": [
+    "smithandfletch.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.2",
+    "fabric": "*",
+    "minecraft": "1.15.x"
+  }
+}
