@@ -1,17 +1,9 @@
 package rambox.smithandfletch.block.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.Container;
-import net.minecraft.container.ContainerProvider;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
 
 public class SmithingTableBlockEntity extends BlockEntity implements Inventory {
     public SmithingTableBlockEntity() {
