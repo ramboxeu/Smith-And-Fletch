@@ -1,4 +1,4 @@
-package rambox.smithandfletch.entity;
+package rambox.smithandfletch.block.entity;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;

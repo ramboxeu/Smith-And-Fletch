@@ -6,10 +6,7 @@
   "name": "Smith And Fletch",
   "description": "Adds a bit of functionality to Smiting and Fletching Table.",
   "authors": [
-    {
-      "name": "Rambox",
-      "contact": "https://twitter.com/RamboxEu"
-    }
+      "Rambox"
   ],
   "contact": {
     "sources": "https://github.com/ramboxeu/Smith-And-Fletch",
@@ -33,5 +30,8 @@
     "fabricloader": ">=0.7.2",
     "fabric": "*",
     "minecraft": "1.15.x"
+  },
+  "suggests": {
+    "flamingo": "*"
   }
 }
