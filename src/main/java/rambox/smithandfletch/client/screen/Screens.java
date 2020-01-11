@@ -9,7 +9,7 @@ public class Screens {
     public static void register() {
         ScreenProviderRegistry.INSTANCE.registerFactory(Containers.SMITHING_TABLE_CONTAINER, (syncid, identifier, player, buf) -> {
             SmithingTableBlockEntity smithingTableBlockEntity = (SmithingTableBlockEntity) player.world.getBlockEntity(buf.readBlockPos());
-            return new SmithingTableScreen(new SmithingTableContainer(syncid, player.inventory, smithingTableBlockEntity), player.inventory);
+            return new SmithingTableScreen(new SmithingTableContainer(syncid, player.inventory, smithingTableBlockEntity), smithingTableBlockEntity,player.inventory);
         });
     }
 }

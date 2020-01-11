@@ -41,4 +41,29 @@ public class SmithingTableContainer extends Container {
     public boolean canUse(PlayerEntity player) {
         return true;
     }
+
+    @Override
+    public ItemStack transferSlot(PlayerEntity player, int invSlot) {
+        ItemStack itemStack = ItemStack.EMPTY;
+        Slot slot = this.slotList.get(invSlot);
+
+        if (slot != null && slot.hasStack()) {
+            itemStack = slot.getStack();
+            if (invSlot < this.inventory.getInvSize()) {
+                if (!this.insertItem(itemStack, this.inventory.getInvSize(), this.slotList.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.insertItem(itemStack, 0, this.inventory.getInvSize(), false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (itemStack.isEmpty()) {
+                slot.setStack(ItemStack.EMPTY);
+            } else {
+                slot.markDirty();
+            }
+        }
+
+        return itemStack;
+    }
 }
