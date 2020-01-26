@@ -3,7 +3,6 @@ package rambox.smithandfletch.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
@@ -36,6 +35,7 @@ public class SmithingTableScreen extends AbstractContainerScreen {
         int j = (this.height - this.containerHeight) / 2;
         this.blit(i, j, 0, 0, this.containerWidth, this.containerHeight);
     }
+
     @Override
     protected void drawForeground(int mouseX, int mouseY) {
         String title = "Smithing Table";

@@ -10,6 +10,6 @@ public class Containers {
 
     public static void register(){
         ContainerProviderRegistry.INSTANCE.registerFactory(SMITHING_TABLE_CONTAINER, (syncid, identifier, player, buf) -> new SmithingTableContainer(syncid, player.inventory, (SmithingTableBlockEntity) player.world.getBlockEntity(buf.readBlockPos())));
-        ContainerProviderRegistry.INSTANCE.registerFactory(FLETCHING_TABLE_CONTAINER, (syncid, identifier, player, buf) -> new FletchingTableContainer(syncid));
+        ContainerProviderRegistry.INSTANCE.registerFactory(FLETCHING_TABLE_CONTAINER, (syncid, identifier, player, buf) -> new FletchingTableContainer(syncid, player.inventory));
     }
 }
