@@ -25,7 +25,7 @@ public class FletchingTableContainer extends Container {
         this.addSlot(new Slot(inputInventory, 0, 30, 26) {
             @Override
             public boolean canInsert(ItemStack stack) {
-                return stack.isItemEqual(new ItemStack(Items.LINGERING_POTION)) || stack.isItemEqual(new ItemStack(Items.GLOWSTONE_DUST));
+                return stack.isItemEqual(new ItemStackq(Items.LINGERING_POTION)) || stack.isItemEqual(new ItemStack(Items.GLOWSTONE_DUST));
             }
         });
         this.addSlot(new Slot(inputInventory, 1, 30, 45) {
