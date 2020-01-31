@@ -49,7 +49,7 @@ public class FletchingTableContainer extends Container {
 
         this.context = blockContext;
 
-        this.effectSlot = this.addSlot(new Slot(inputInventory, 0, 30, 26) {
+        this.effectSlot = this.addSlot(new Slot(inputInventory, 0, 15, 26) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 Potion potion = PotionUtil.getPotion(stack);
@@ -60,14 +60,14 @@ public class FletchingTableContainer extends Container {
             }
         });
 
-        this.arrowSlot = this.addSlot(new Slot(inputInventory, 1, 30, 45) {
+        this.arrowSlot = this.addSlot(new Slot(inputInventory, 1, 15, 45) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return stack.isItemEqual(new ItemStack(Items.ARROW));
             }
         });
 
-        this.outputSlot = this.addSlot(new Slot(outputInventory, 0, 130, 36) {
+        this.outputSlot = this.addSlot(new Slot(outputInventory, 0, 45, 33) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return false;
@@ -135,27 +135,33 @@ public class FletchingTableContainer extends Container {
 
     @Environment(EnvType.CLIENT)
     public void setInventoryChangeListener(Runnable inventoryChangeListener) {
+        SmithAndFletch.LOGGER.info("Inventory listener added!");
         this.inventoryChangeListener = inventoryChangeListener;
     }
 
     public void onContentChanged(Inventory inventory) {
+        this.updateOutputSlot();
+        this.sendContentUpdates();
+    }
+
+    private void updateOutputSlot(){
         ItemStack effect = this.effectSlot.getStack();
         ItemStack arrows = this.arrowSlot.getStack();
         ItemStack output;
 
-        if (!effect.isEmpty() && !arrows.isEmpty()) {
+        if (!effect.isEmpty() && !arrows.isEmpty() && arrows.getCount() >= 8) {
             if (effect.getItem() instanceof LingeringPotionItem) {
-                output = new ItemStack(Items.TIPPED_ARROW, arrows.getCount() >= 8 ? 8 : 0);
+                output = new ItemStack(Items.TIPPED_ARROW, 8);
                 PotionUtil.setPotion(output, PotionUtil.getPotion(effect));
             } else {
-                output = new ItemStack(Items.SPECTRAL_ARROW, arrows.getCount() >= 8 ? 8 : 0);
+                output = new ItemStack(Items.SPECTRAL_ARROW, 8);
             }
 
-            if (!outputSlot.getStack().isItemEqual(output)) {
-                outputSlot.setStack(output);
+            if (!ItemStack.areEqualIgnoreDamage(output, this.outputSlot.getStack())) {
+                this.outputSlot.setStack(output);
             }
         } else {
-            outputSlot.setStack(ItemStack.EMPTY);
+            this.outputSlot.setStack(ItemStack.EMPTY);
         }
     }
 }
