@@ -1,6 +1,7 @@
 package rambox.smithandfletch.client.screen;
 
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
+import net.minecraft.container.BlockContext;
 import rambox.smithandfletch.block.entity.SmithingTableBlockEntity;
 import rambox.smithandfletch.client.container.Containers;
 import rambox.smithandfletch.client.container.FletchingTableContainer;
@@ -13,6 +14,6 @@ public class Screens {
             return new SmithingTableScreen(new SmithingTableContainer(syncid, player.inventory, smithingTableBlockEntity), smithingTableBlockEntity,player.inventory);
         });
 
-        ScreenProviderRegistry.INSTANCE.registerFactory(Containers.FLETCHING_TABLE_CONTAINER, (syncid, identifier, player, buf) -> new FletchingTableScreen(new FletchingTableContainer(syncid, player.inventory), player.inventory));
+        ScreenProviderRegistry.INSTANCE.registerFactory(Containers.FLETCHING_TABLE_CONTAINER, (syncid, identifier, player, buf) -> new FletchingTableScreen(new FletchingTableContainer(syncid, player.inventory, BlockContext.EMPTY), player.inventory));
     }
 }

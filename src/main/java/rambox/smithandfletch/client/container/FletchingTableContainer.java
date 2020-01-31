@@ -1,5 +1,8 @@
 package rambox.smithandfletch.client.container;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.container.BlockContext;
 import net.minecraft.container.Container;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,34 +11,76 @@ import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.LingeringPotionItem;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtil;
+import net.minecraft.potion.Potions;
+import rambox.smithandfletch.SmithAndFletch;
 
 public class FletchingTableContainer extends Container {
-    private Inventory inputInventory;
-    public Inventory outputInventory;
+    private final Inventory inputInventory;
+    public final Inventory outputInventory;
     private Runnable inventoryChangeListener;
+    private final BlockContext context;
+    private final Slot effectSlot;
+    private final Slot arrowSlot;
+    private final Slot outputSlot;
 
-    public FletchingTableContainer(int syncId, PlayerInventory playerInventory) {
+    public FletchingTableContainer(int syncId, PlayerInventory playerInventory, BlockContext blockContext) {
         super(null, syncId);
 
-        this.inputInventory = new BasicInventory(2);
-        this.outputInventory = new BasicInventory(1);
+        this.inputInventory = new BasicInventory(2) {
+            @Override
+            public void markDirty() {
+                super.markDirty();
+                FletchingTableContainer.this.onContentChanged(this);
+                inventoryChangeListener.run();
+            }
+        };
+        this.outputInventory = new BasicInventory(1) {
+            @Override
+            public void markDirty() {
+                super.markDirty();
+                inventoryChangeListener.run();
+            }
+        };
 
         this.inventoryChangeListener = () -> {};
 
-        this.addSlot(new Slot(inputInventory, 0, 30, 26) {
+        this.context = blockContext;
+
+        this.effectSlot = this.addSlot(new Slot(inputInventory, 0, 30, 26) {
             @Override
             public boolean canInsert(ItemStack stack) {
-                return stack.isItemEqual(new ItemStackq(Items.LINGERING_POTION)) || stack.isItemEqual(new ItemStack(Items.GLOWSTONE_DUST));
+                Potion potion = PotionUtil.getPotion(stack);
+
+                return (stack.getItem() instanceof LingeringPotionItem &&
+                        !(potion.equals(Potions.AWKWARD) || potion.equals(Potions.EMPTY) || potion.equals(Potions.WATER) || potion.equals(Potions.THICK) || potion.equals(Potions.MUNDANE)
+                ) || stack.isItemEqual(new ItemStack(Items.GLOWSTONE_DUST)));
             }
         });
-        this.addSlot(new Slot(inputInventory, 1, 30, 45) {
+
+        this.arrowSlot = this.addSlot(new Slot(inputInventory, 1, 30, 45) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return stack.isItemEqual(new ItemStack(Items.ARROW));
             }
         });
 
-        this.addSlot(new Slot(outputInventory, 0, 130, 36));
+        this.outputSlot = this.addSlot(new Slot(outputInventory, 0, 130, 36) {
+            @Override
+            public boolean canInsert(ItemStack stack) {
+                return false;
+            }
+
+            @Override
+            public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
+                FletchingTableContainer.this.effectSlot.takeStack(1);
+                FletchingTableContainer.this.arrowSlot.takeStack(8);
+
+                return super.onTakeItem(player, stack);
+            }
+        });
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -77,5 +122,40 @@ public class FletchingTableContainer extends Container {
         }
 
         return itemStack;
+    }
+
+    @Override
+    public void close(PlayerEntity player) {
+        super.close(player);
+        this.context.run((world, blockPos) -> {
+            SmithAndFletch.LOGGER.info("Dropping inventory!");
+            this.dropInventory(player, player.world, inputInventory);
+        });
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void setInventoryChangeListener(Runnable inventoryChangeListener) {
+        this.inventoryChangeListener = inventoryChangeListener;
+    }
+
+    public void onContentChanged(Inventory inventory) {
+        ItemStack effect = this.effectSlot.getStack();
+        ItemStack arrows = this.arrowSlot.getStack();
+        ItemStack output;
+
+        if (!effect.isEmpty() && !arrows.isEmpty()) {
+            if (effect.getItem() instanceof LingeringPotionItem) {
+                output = new ItemStack(Items.TIPPED_ARROW, arrows.getCount() >= 8 ? 8 : 0);
+                PotionUtil.setPotion(output, PotionUtil.getPotion(effect));
+            } else {
+                output = new ItemStack(Items.SPECTRAL_ARROW, arrows.getCount() >= 8 ? 8 : 0);
+            }
+
+            if (!outputSlot.getStack().isItemEqual(output)) {
+                outputSlot.setStack(output);
+            }
+        } else {
+            outputSlot.setStack(ItemStack.EMPTY);
+        }
     }
 }

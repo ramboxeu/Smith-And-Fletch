@@ -1,6 +1,7 @@
 package rambox.smithandfletch.client.container;
 
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.minecraft.container.BlockContext;
 import net.minecraft.util.Identifier;
 import rambox.smithandfletch.block.entity.SmithingTableBlockEntity;
 
@@ -10,6 +11,6 @@ public class Containers {
 
     public static void register(){
         ContainerProviderRegistry.INSTANCE.registerFactory(SMITHING_TABLE_CONTAINER, (syncid, identifier, player, buf) -> new SmithingTableContainer(syncid, player.inventory, (SmithingTableBlockEntity) player.world.getBlockEntity(buf.readBlockPos())));
-        ContainerProviderRegistry.INSTANCE.registerFactory(FLETCHING_TABLE_CONTAINER, (syncid, identifier, player, buf) -> new FletchingTableContainer(syncid, player.inventory));
+        ContainerProviderRegistry.INSTANCE.registerFactory(FLETCHING_TABLE_CONTAINER, (syncid, identifier, player, buf) -> new FletchingTableContainer(syncid, player.inventory, BlockContext.create(player.world, buf.readBlockPos())));
     }
 }
