@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Smith And Fletch",
-  "description": "Adds a bit of functionality to Smiting and Fletching Table.",
+  "description": "Adds a bit of functionality to Smithing and Fletching Table.",
   "authors": [
       "Rambox"
   ],

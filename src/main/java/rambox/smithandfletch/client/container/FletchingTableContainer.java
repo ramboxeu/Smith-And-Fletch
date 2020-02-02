@@ -67,7 +67,7 @@ public class FletchingTableContainer extends Container {
             }
         });
 
-        this.outputSlot = this.addSlot(new Slot(outputInventory, 0, 45, 33) {
+        this.outputSlot = this.addSlot(new Slot(outputInventory, 0, 44, 34) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return false;

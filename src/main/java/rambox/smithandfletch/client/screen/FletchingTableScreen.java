@@ -2,17 +2,13 @@ package rambox.smithandfletch.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
-import net.minecraft.container.Container;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import rambox.smithandfletch.SmithAndFletch;
 import rambox.smithandfletch.client.container.FletchingTableContainer;
 
 import java.util.List;

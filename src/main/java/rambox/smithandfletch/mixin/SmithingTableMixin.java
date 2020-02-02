@@ -39,4 +39,18 @@ public class SmithingTableMixin implements BlockEntityProvider {
     public BlockEntity createBlockEntity(BlockView view) {
         return new SmithingTableBlockEntity();
     }
+
+    public boolean hasComparatorOutput(BlockState state) {
+        return true;
+    }
+
+    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+
+        if (blockEntity instanceof SmithingTableBlockEntity) {
+            return ((SmithingTableBlockEntity) blockEntity).calculateRedstonePower();
+        }
+
+        return 0;
+    }
 }

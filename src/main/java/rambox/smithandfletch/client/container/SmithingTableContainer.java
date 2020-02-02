@@ -6,7 +6,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.registry.Registry;
 import rambox.smithandfletch.SmithAndFletch;
+import rambox.smithandfletch.config.Config;
 
 public class SmithingTableContainer extends Container {
     private final Inventory inventory;
@@ -22,7 +24,7 @@ public class SmithingTableContainer extends Container {
         this.addSlot(new Slot(inventory, 0, 36, 33) {
             @Override
             public boolean canInsert(ItemStack stack) {
-                return stack.isDamageable();
+                return (stack.isDamageable() && !SmithAndFletch.config.getBlacklist().contains(Registry.ITEM.getId(stack.getItem())));
             }
         });
 

@@ -35,7 +35,7 @@ public class SmithingTableBlockEntity extends BlockEntity implements Inventory, 
         Inventories.toTag(tag, this.inventory);
         tag.putInt("tickCounter", tickCounter);
 
-        SmithAndFletch.LOGGER.info("Saved tag: ", tag.toString());
+        SmithAndFletch.LOGGER.info("Saved tag: " + tag.toString());
         return tag;
     }
 
@@ -49,6 +49,7 @@ public class SmithingTableBlockEntity extends BlockEntity implements Inventory, 
                 int repair = stack.getDamage() - 1;
                 if (repair <= stack.getMaxDamage()) {
                     stack.setDamage(repair);
+                    this.world.updateNeighbors(this.pos, this.world.getBlockState(this.pos).getBlock());
                 }
             } else {
                 tickCounter++;
@@ -98,5 +99,13 @@ public class SmithingTableBlockEntity extends BlockEntity implements Inventory, 
     @Override
     public void clear() {
         this.inventory.clear();
+    }
+
+    public int calculateRedstonePower(){
+        ItemStack tool = this.inventory.get(0);
+        if (!tool.isEmpty()) {
+            return (int)((15 * ((float) (tool.getMaxDamage() - tool.getDamage()) / tool.getMaxDamage())) / 1);
+        }
+        return 0;
     }
 }
