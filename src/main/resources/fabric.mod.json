@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Smith And Fletch",
-  "description": "Adds a bit of functionality to Smithing and Fletching Table.",
+  "description": "Adds some functionality to Smithing and Fletching Table.",
   "authors": [
       "Rambox"
   ],
@@ -14,7 +14,7 @@
   },
 
   "license": "MIT",
-  "icon": "",
+  "icon": "icon.png",
 
   "environment": "*",
   "entrypoints": {

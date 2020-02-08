@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Tickable;
-import rambox.smithandfletch.SmithAndFletch;
 
 public class SmithingTableBlockEntity extends BlockEntity implements Inventory, Tickable {
     public DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
@@ -35,7 +34,6 @@ public class SmithingTableBlockEntity extends BlockEntity implements Inventory, 
         Inventories.toTag(tag, this.inventory);
         tag.putInt("tickCounter", tickCounter);
 
-        SmithAndFletch.LOGGER.info("Saved tag: " + tag.toString());
         return tag;
     }
 
@@ -104,7 +102,11 @@ public class SmithingTableBlockEntity extends BlockEntity implements Inventory, 
     public int calculateRedstonePower(){
         ItemStack tool = this.inventory.get(0);
         if (!tool.isEmpty()) {
-            return (int)((15 * ((float) (tool.getMaxDamage() - tool.getDamage()) / tool.getMaxDamage())) / 1);
+            if (tool.getDamage() > 0) {
+                return (int) (((14 * ((float) (tool.getMaxDamage() - tool.getDamage()) / tool.getMaxDamage())) / 1) + 1);
+            } else if (tool.getDamage() == 0) {
+                return 15;
+            }
         }
         return 0;
     }

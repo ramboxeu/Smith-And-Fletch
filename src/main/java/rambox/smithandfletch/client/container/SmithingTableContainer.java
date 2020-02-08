@@ -8,7 +8,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.registry.Registry;
 import rambox.smithandfletch.SmithAndFletch;
-import rambox.smithandfletch.config.Config;
 
 public class SmithingTableContainer extends Container {
     private final Inventory inventory;
@@ -16,10 +15,6 @@ public class SmithingTableContainer extends Container {
     public SmithingTableContainer(int syncId, PlayerInventory playerInventory, Inventory inventory) {
         super(null, syncId);
         this.inventory = inventory;
-
-        SmithAndFletch.LOGGER.info(inventory.getInvSize());
-
-        // 36, 33
 
         this.addSlot(new Slot(inventory, 0, 36, 33) {
             @Override

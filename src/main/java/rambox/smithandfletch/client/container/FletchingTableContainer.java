@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ArrowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.LingeringPotionItem;
@@ -101,24 +102,48 @@ public class FletchingTableContainer extends Container {
     @Override
     public ItemStack transferSlot(PlayerEntity player, int invSlot) {
         ItemStack itemStack = ItemStack.EMPTY;
-        Slot slot = this.slotList.get(invSlot);
-        Inventory inventory = inputInventory;
-
+        Slot slot = (Slot)this.slotList.get(invSlot);
         if (slot != null && slot.hasStack()) {
-            itemStack = slot.getStack();
-            if (invSlot < inventory.getInvSize()) {
-                if (!this.insertItem(itemStack, inventory.getInvSize(), this.slotList.size(), true)) {
+            ItemStack itemStack2 = slot.getStack();
+            itemStack = itemStack2.copy();
+            if (invSlot == this.outputSlot.id) {
+                if (!this.insertItem(itemStack2, 4, 34, true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.insertItem(itemStack, 0, inventory.getInvSize(), false)) {
+
+                slot.onStackChanged(itemStack2, itemStack);
+            } else if (invSlot != this.effectSlot.id && invSlot != this.arrowSlot.id) {
+                if (itemStack2.getItem() instanceof ArrowItem) {
+                    if (!this.insertItem(itemStack2, this.arrowSlot.id, this.arrowSlot.id + 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if (itemStack2.getItem() instanceof LingeringPotionItem || itemStack2.isItemEqualIgnoreDamage(new ItemStack(Items.GLOWSTONE_DUST))) {
+                    if (!this.insertItem(itemStack2, this.effectSlot.id, this.effectSlot.id + 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if (invSlot >= 4 && invSlot < 34) {
+                    if (!this.insertItem(itemStack2, 31, 34, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+//                } else if (invSlot >= 31 && invSlot < 34 && !this.insertItem(itemStack2, 4, 31, false)) {
+//                    return ItemStack.EMPTY;
+//                }
+            } else if (!this.insertItem(itemStack2, 4, 34, false)) {
                 return ItemStack.EMPTY;
             }
 
-            if (itemStack.isEmpty()) {
+            if (itemStack2.isEmpty()) {
                 slot.setStack(ItemStack.EMPTY);
             } else {
                 slot.markDirty();
             }
+
+            if (itemStack2.getCount() == itemStack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTakeItem(player, itemStack2);
         }
 
         return itemStack;
@@ -128,14 +153,12 @@ public class FletchingTableContainer extends Container {
     public void close(PlayerEntity player) {
         super.close(player);
         this.context.run((world, blockPos) -> {
-            SmithAndFletch.LOGGER.info("Dropping inventory!");
             this.dropInventory(player, player.world, inputInventory);
         });
     }
 
     @Environment(EnvType.CLIENT)
     public void setInventoryChangeListener(Runnable inventoryChangeListener) {
-        SmithAndFletch.LOGGER.info("Inventory listener added!");
         this.inventoryChangeListener = inventoryChangeListener;
     }
 

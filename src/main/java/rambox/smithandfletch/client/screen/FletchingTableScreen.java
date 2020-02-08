@@ -5,6 +5,8 @@ import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpectralArrowItem;
+import net.minecraft.item.TippedArrowItem;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
@@ -51,16 +53,20 @@ public class FletchingTableScreen extends AbstractContainerScreen {
         ItemStack arrows = container.outputInventory.getInvStack(0);
         if (!arrows.isEmpty()) {
             List<StatusEffectInstance> effects = PotionUtil.getPotionEffects(arrows);
-            this.font.draw(effects.size() > 1 ? "Effects: " : "Effect: ", 74F, 16F, 14342874);
+            this.font.draw("Effects: ", 74F, 16F, 14342874);
             float y = 25F;
-            for (StatusEffectInstance status : effects) {
-                TranslatableText potionName = new TranslatableText(status.getTranslationKey());
-                if (status.getAmplifier() > 0) {
-                    this.font.draw(potionName.asString() + " " + new TranslatableText("potion.potency." + status.getAmplifier()).asString(), 76F, y, 14342874);
-                } else {
-                    this.font.draw(potionName.asString(), 76F, y, 14342874);
+            if (arrows.getItem() instanceof TippedArrowItem) {
+                for (StatusEffectInstance status : effects) {
+                    TranslatableText potionName = new TranslatableText(status.getTranslationKey());
+                    if (status.getAmplifier() > 0) {
+                        this.font.draw(potionName.asString() + " " + new TranslatableText("potion.potency." + status.getAmplifier()).asString(), 76F, y, 14342874);
+                    } else {
+                        this.font.draw(potionName.asString(), 76F, y, 14342874);
+                    }
+                    y += 10;
                 }
-                y += 10;
+            } else if (arrows.getItem() instanceof SpectralArrowItem) {
+                this.font.draw("Glowing", 76F, y, 14342874);
             }
         }
     }
