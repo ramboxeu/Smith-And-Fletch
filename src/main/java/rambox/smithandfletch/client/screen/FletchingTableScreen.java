@@ -3,6 +3,8 @@ package rambox.smithandfletch.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpectralArrowItem;
@@ -10,7 +12,10 @@ import net.minecraft.item.TippedArrowItem;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ChatUtil;
 import net.minecraft.util.Identifier;
+import org.apache.commons.lang3.StringUtils;
+import rambox.smithandfletch.SmithAndFletch;
 import rambox.smithandfletch.client.container.FletchingTableContainer;
 
 import java.util.List;
@@ -57,16 +62,22 @@ public class FletchingTableScreen extends AbstractContainerScreen {
             float y = 25F;
             if (arrows.getItem() instanceof TippedArrowItem) {
                 for (StatusEffectInstance status : effects) {
-                    TranslatableText potionName = new TranslatableText(status.getTranslationKey());
+                    String potionName = new TranslatableText(status.getTranslationKey()).asString();
+                    String potionPotency = "";
+                    String potionDuration = " (" + StatusEffectUtil.durationToString(status,    .125F) + ")";
+
                     if (status.getAmplifier() > 0) {
-                        this.font.draw(potionName.asString() + " " + new TranslatableText("potion.potency." + status.getAmplifier()).asString(), 76F, y, 14342874);
-                    } else {
-                        this.font.draw(potionName.asString(), 76F, y, 14342874);
+                        potionPotency = " " + (new TranslatableText("potion.potency." + status.getAmplifier())).asString();
                     }
-                    y += 10;
+
+                    potionName = potionName + potionPotency;
+
+                    this.font.draw(potionName, 76F, y, 14342874);
+                    this.font.draw(potionDuration, 131F, y + 10, 14342874);
+                    y += 20;
                 }
             } else if (arrows.getItem() instanceof SpectralArrowItem) {
-                this.font.draw("Glowing", 76F, y, 14342874);
+                this.font.draw("Glowing (0:10)", 76F, y, 14342874);
             }
         }
     }
