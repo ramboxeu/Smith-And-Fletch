@@ -90,6 +90,11 @@ public class SmithingTableBlockEntity extends BlockEntity implements Inventory, 
     }
 
     @Override
+    public boolean isValidInvStack(int slot, ItemStack stack) {
+        return stack.isDamageable();
+    }
+
+    @Override
     public boolean canPlayerUseInv(PlayerEntity player) {
         return true;
     }

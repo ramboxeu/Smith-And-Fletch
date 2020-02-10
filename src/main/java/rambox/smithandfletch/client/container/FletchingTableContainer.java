@@ -9,14 +9,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ArrowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.LingeringPotionItem;
+import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
-import rambox.smithandfletch.SmithAndFletch;
 
 public class FletchingTableContainer extends Container {
     private final Inventory inputInventory;
@@ -57,7 +53,7 @@ public class FletchingTableContainer extends Container {
 
                 return (stack.getItem() instanceof LingeringPotionItem &&
                         !(potion.equals(Potions.AWKWARD) || potion.equals(Potions.EMPTY) || potion.equals(Potions.WATER) || potion.equals(Potions.THICK) || potion.equals(Potions.MUNDANE)
-                ) || stack.isItemEqual(new ItemStack(Items.GLOWSTONE_DUST)));
+                ) || stack.getItem().equals(Items.GLOWSTONE_DUST));
             }
         });
 
@@ -76,8 +72,14 @@ public class FletchingTableContainer extends Container {
 
             @Override
             public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
-                FletchingTableContainer.this.effectSlot.takeStack(1);
-                FletchingTableContainer.this.arrowSlot.takeStack(8);
+                ItemStack craft = this.getStack();
+                if (craft.getItem() instanceof SpectralArrowItem) {
+                    FletchingTableContainer.this.effectSlot.takeStack(4);
+                    FletchingTableContainer.this.arrowSlot.takeStack(1);
+                } else if (craft.getItem() instanceof TippedArrowItem) {
+                    FletchingTableContainer.this.effectSlot.takeStack(1);
+                    FletchingTableContainer.this.arrowSlot.takeStack(8);
+                }
 
                 return super.onTakeItem(player, stack);
             }
@@ -102,7 +104,7 @@ public class FletchingTableContainer extends Container {
     @Override
     public ItemStack transferSlot(PlayerEntity player, int invSlot) {
         ItemStack itemStack = ItemStack.EMPTY;
-        Slot slot = (Slot)this.slotList.get(invSlot);
+        Slot slot = this.slotList.get(invSlot);
         if (slot != null && slot.hasStack()) {
             ItemStack itemStack2 = slot.getStack();
             itemStack = itemStack2.copy();
@@ -117,7 +119,7 @@ public class FletchingTableContainer extends Container {
                     if (!this.insertItem(itemStack2, this.arrowSlot.id, this.arrowSlot.id + 1, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (itemStack2.getItem() instanceof LingeringPotionItem || itemStack2.isItemEqualIgnoreDamage(new ItemStack(Items.GLOWSTONE_DUST))) {
+                } else if (itemStack2.getItem() instanceof LingeringPotionItem || itemStack2.getItem().equals(Items.GLOWSTONE_DUST)) {
                     if (!this.insertItem(itemStack2, this.effectSlot.id, this.effectSlot.id + 1, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -126,9 +128,6 @@ public class FletchingTableContainer extends Container {
                         return ItemStack.EMPTY;
                     }
                 }
-//                } else if (invSlot >= 31 && invSlot < 34 && !this.insertItem(itemStack2, 4, 31, false)) {
-//                    return ItemStack.EMPTY;
-//                }
             } else if (!this.insertItem(itemStack2, 4, 34, false)) {
                 return ItemStack.EMPTY;
             }
@@ -170,13 +169,13 @@ public class FletchingTableContainer extends Container {
     private void updateOutputSlot(){
         ItemStack effect = this.effectSlot.getStack();
         ItemStack arrows = this.arrowSlot.getStack();
-        ItemStack output;
+        ItemStack output = ItemStack.EMPTY;
 
-        if (!effect.isEmpty() && !arrows.isEmpty() && arrows.getCount() >= 8) {
-            if (effect.getItem() instanceof LingeringPotionItem) {
+        if (!effect.isEmpty() && !arrows.isEmpty()) {
+            if (effect.getItem() instanceof LingeringPotionItem && arrows.getCount() >= 8) {
                 output = new ItemStack(Items.TIPPED_ARROW, 8);
                 PotionUtil.setPotion(output, PotionUtil.getPotion(effect));
-            } else {
+            } else if (effect.getItem().equals(Items.GLOWSTONE_DUST) && arrows.getCount() >= 2) {
                 output = new ItemStack(Items.SPECTRAL_ARROW, 8);
             }
 
